@@ -4,7 +4,9 @@
 
 # CKAD Notes
 
-CKAD preparations notes for commands
+CKAD preparations notes for imperative commands
+
+- [Commands Guide](#commands-guide)
 
 ## Contents
 
@@ -15,6 +17,29 @@ CKAD preparations notes for commands
 - [Observability - 18%](#observability)
 - [Services and networking - 13%](#services-and-networking)
 - [State persistence - 8%](#state-persistence)
+
+# Commands Guide
+
+These are basic commands we can run inside a pod, a container in a pod, as a startup command, as arguments to a pod etc.
+
+Use these arguments to perform some commands for given pod.
+
+```
+$ --command -it -- echo "Hello World!"  # prints the output to shell directly
+$ -- /bin/sh -c 'echo "Hello WorlD!!"'
+
+# print environment variables
+$ -it -- printenv
+$ -- env # works the same but check logs with k logs resource-name
+$ k exec -it po/nginx -- /bin/sh
+$ env
+
+$ -- sleep 3600 # this will go as arguments
+$ k describe po/nginx1 | grep -C 4 -i "Memory" # 4 lines before and after of the match
+
+$ grep -i "error" # case insensitive search
+$ grep -C -i error # get 4 lines before and after of the found match
+```
 
 # Core Concepts
 
@@ -45,6 +70,11 @@ ConfigMaps, Secrets, Security Contexts, Requests & Limits, Service Accounts
 
 # Observability
 
-# Services and Networking
+Debugging, Logging, Monitoring
+# Services and NetworkPolicies
+
+Deployments, Services, NetworkPolicies
 
 # State Persistence
+
+Persistence Volume and Persistence Volume Claims
