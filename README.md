@@ -18,6 +18,16 @@ CKAD preparations notes for imperative commands
 - [Services and networking - 13%](#services-and-networking)
 - [State persistence - 8%](#state-persistence)
 
+
+# Set Alias
+
+It helps!
+
+```
+alias k=kubectl
+```
+
+
 # Commands Guide
 
 These are basic commands we can run inside a pod, a container in a pod, as a startup command, as arguments to a pod etc.
@@ -63,6 +73,11 @@ Multiple containers in a single pod. Three design patterns,
 # Pod Design
 
 Deployments, Rolling Updates, Jobs and Cron Jobs
+
+```
+# get all the resources and using label selector
+$ k get all --selector env=prod
+```
 
 # Configuration
 
