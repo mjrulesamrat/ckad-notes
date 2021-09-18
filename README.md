@@ -92,6 +92,12 @@ $ echo -n "encoded" | base64 --decode
 # Tolerations are set on Pods
 $ k taint node node-name key=valu:Effect
 
+# Node Selector
+$ k label node nodename key=value
+
+# Node affinity
+# it's for Pod only. On which pod we want to schedule the pod.
+# Get used to adding diff NodeAffinity config for given Pod.
 ```
 
 # Observability
