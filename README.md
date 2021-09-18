@@ -83,6 +83,17 @@ $ k get all --selector env=prod
 
 ConfigMaps, Secrets, Security Contexts, Requests & Limits, Service Accounts
 
+```
+# decode the secret
+$ echo -n "encoded" | base64 --decode
+
+# Taints & Tolerations
+# Tains are set on Nodes
+# Tolerations are set on Pods
+$ k taint node node-name key=valu:Effect
+
+```
+
 # Observability
 
 Debugging, Logging, Monitoring
