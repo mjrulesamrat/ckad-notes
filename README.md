@@ -30,9 +30,12 @@ alias k=kubectl
 
 # Commands Guide
 
-These are basic commands we can run inside a pod, a container in a pod, as a startup command, as arguments to a pod etc.
+In a nutshell,
+- Docker EntryPoint -> Command (`--command -- here`)
 
-Use these arguments to perform some commands for given pod.
+- Command -> Arguments (`-- something`)
+
+Below are few references that I have picked up during the practices.
 
 ```
 $ --command -it -- echo "Hello World!"  # prints the output to shell directly
@@ -40,11 +43,19 @@ $ -- /bin/sh -c 'echo "Hello WorlD!!"'
 
 # print environment variables
 $ -it -- printenv
-$ -- env # works the same but check logs with k logs resource-name
+$ -- env # works the same but check logs with
+$ k logs resource-name
+
+# Go to shell and check env
 $ k exec -it po/nginx -- /bin/sh
 $ env
 
+# sleep busybox pox for given time
 $ -- sleep 3600 # this will go as arguments
+$ --command -- /bin/sh -c 'sleep 3600'
+# otherwise just dry run and add
+    command: ['sleep', '3600']
+
 $ k describe po/nginx1 | grep -C 4 -i "Memory" # 4 lines before and after of the match
 
 $ grep -i "error" # case insensitive search
@@ -59,6 +70,11 @@ Commands:
 
 ```
 $ kubectl run nginx --image=nginx --restart=Never --dry-run=client -o yaml > pod1.yaml
+
+# add --rm command to remove pod once command is ran
+$ k run box --image=busybox --rm -it --command -- /bin/sh -c 'wget -O- IP'
+
+$ k run box --image=busybox --restart=Never --rm -it --command -- env
 
 ```
 
@@ -108,6 +124,14 @@ $ k get events
 
 # Include namespace as well
 $ k -n ns get events | grep -i "probe failed"
+
+# Check logs of any resource
+$ k logs name
+
+# Top resource utilisations for nodes & pods
+$ k top nodes
+$ k top pods
+$ k top po/po-name
 ```
 
 Debugging, Logging, Monitoring
