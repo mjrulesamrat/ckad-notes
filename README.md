@@ -102,10 +102,23 @@ $ k label node nodename key=value
 
 # Observability
 
+```
+# Get all failure events
+$ k get events
+
+# Include namespace as well
+$ k -n ns get events | grep -i "probe failed"
+```
+
 Debugging, Logging, Monitoring
 # Services and NetworkPolicies
 
 Deployments, Services, NetworkPolicies
+
+```
+# Best way to create a service is using yaml file
+$ k expose deploy/name --name=service-name --port=80
+```
 
 # State Persistence
 
