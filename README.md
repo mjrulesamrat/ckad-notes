@@ -140,6 +140,8 @@ ConfigMaps, Secrets, Security Contexts, Requests & Limits, Service Accounts
 - Have bookmarks ready for complex example like configmap with volume, set env variable from configmap, use secret as volume, have all env from file etc.
 - Get used to setting Tolerations & NodeAffinity
 
+- securitycontext can be set at both pod level and the container level. Look for the details and apply the same.
+
 ```bash
 # decode the secret
 $ echo -n "encoded" | base64 --decode
@@ -179,8 +181,15 @@ $ k label deploy/nginx --overwrite app=foo
 
 # remove label or annotation
 $ k label deploy/nginx app-
-$ k annotate po/nginx description-
+$ k annotate po/nginx 
 
+# Horizontal Pod autoscale
+$ k get hpa
+$ k autoscale deploy/nginx --min=2 --max=5 --cpu-percent=80 --name=nginxscale
+
+# Learn to write jsonpath??
+$ kubectl get pods -o=jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.status.startTime}{"\n"}{end}'
+$ kubectl get po  -n skywalker --selector=jedi=true -o jsonpath="{range .items[*]}{.metadata.name},{.spec.containers[0].image}{'\n'}{end}" > /root/jedi-true.txt
 ```
 
 # Observability
@@ -258,3 +267,7 @@ $ kubectl cp busybox:etc/passwd ./passwd
 # feel free to ignore it since copy command works
 $ cat passwd
 ```
+
+More Resources and notes ref:
+
+- https://gist.github.com/veggiemonk/70d95df77029b3ebe58637d89ef83b6b [Ask me how I know this!]
