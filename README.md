@@ -23,10 +23,39 @@ CKAD preparations notes for imperative commands
 
 It helps!
 
-```
+```bash
 alias k=kubectl
 ```
 
+# Shortcuts/Aliases
+
+Saves time!
+
+1. **po** for Pods
+2. **rs** for ReplicaSets
+3. **deploy** for Deployments
+4. **svc** for Services
+5. **ns** for Namespaces
+6. **netpol** for Network policies
+7. **pv** for PersistentVolume
+8. **pvc** for PersistentVolumeClaims
+9. **sa** for Service accounts
+
+```bash
+# get all resource
+$ k get all -A
+
+# get api-resources
+$ k api-resources
+```
+
+# Tips
+
+1. Start with first one and solve if it's easy
+2. Hard ones. Skip and take note
+3. Moderate One. You know it. Attempt it. If error, don't spend too much time. Note and Move on!
+4. Don't spend too much time editing YAML. Get your YAML basics together!
+5. Use aliases and shortcuts
 
 # Commands Guide
 
@@ -37,7 +66,7 @@ In a nutshell,
 
 Below are few references that I have picked up during the practices.
 
-```
+```bash
 $ --command -it -- echo "Hello World!"  # prints the output to shell directly
 $ -- /bin/sh -c 'echo "Hello WorlD!!"'
 
@@ -67,7 +96,7 @@ $ grep -C -i error # get 4 lines before and after of the found match
 
 Creating and Managing Pods
 
-```
+```bash
 $ kubectl run nginx --image=nginx --restart=Never --dry-run=client -o yaml > pod1.yaml
 
 # add --rm command to remove pod once command is ran
@@ -89,7 +118,7 @@ Multiple containers in a single pod. Three design patterns,
 
   You will be then asked to connect one container and check logs or get logs to some local file on the node.
 
-  ```
+  ```bash
   $ k logs po/mypo -c nginx  # logs from nginx container
   $ k logs po/mypo -c box  # logs from box container
   ```
@@ -98,7 +127,11 @@ Multiple containers in a single pod. Three design patterns,
 
 ConfigMaps, Secrets, Security Contexts, Requests & Limits, Service Accounts
 
-```
+- use --from-literal command to create cm, env and secret
+- Have bookmarks ready for complex example like configmap with volume, set env variable from configmap, use secret as volume, have all env from file etc.
+- Get used to setting Tolerations & NodeAffinity
+
+```bash
 # decode the secret
 $ echo -n "encoded" | base64 --decode
 
@@ -119,7 +152,7 @@ $ k label node nodename key=value
 
 Deployments, Rolling Updates, Jobs and Cron Jobs
 
-```
+```bash
 # get all the resources and using label selector
 $ k get all --selector env=prod
 
@@ -131,7 +164,7 @@ $ k label deploy/nginx --overwrite app=foo
 
 # Observability
 
-```
+```bash
 # Get all failure events
 $ k get events
 
@@ -150,9 +183,21 @@ $ k top po/po-name
 Debugging, Logging, Monitoring
 # Services and NetworkPolicies
 
-Deployments, Services, NetworkPolicies
+Services
 
-```
+- Two Types: Cluster IP & NodePort
+
+Network polices
+
+- Ingress and Egress
+- Have pod selector understood correctly
+
+Ingress
+
+- check services port before creating ingress resource. CKAD does not ask you to create ingress controller. Don't worry about the 300XX Ports.
+- Check if you need to add ingress resource for host name or just re-write the path
+
+```bash
 # Pod can be exposed directly using --expose argument
 # deployment can not be exposed directly
 
