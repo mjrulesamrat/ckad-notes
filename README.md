@@ -99,6 +99,15 @@ Creating and Managing Pods
 ```bash
 $ kubectl run nginx --image=nginx --restart=Never --dry-run=client -o yaml > pod1.yaml
 
+# create namespace
+$ k create ns myns
+
+# check current namespace
+$ k config view --minify | grep namespace
+
+# set current namespace
+$ k config set-context --current --namespace=myns
+
 # add --rm command to remove pod once command is ran
 $ k run box --image=busybox --rm -it --command -- /bin/sh -c 'wget -O- IP'
 
@@ -140,7 +149,7 @@ $ echo -n "encoded" | base64 --decode
 # Tolerations are set on Pods
 $ k taint node node-name key=valu:Effect
 
-# Node Selector
+# Node Selector | use the same for container to schedule pod with given labeled node
 $ k label node nodename key=value
 
 # Node affinity
@@ -150,21 +159,42 @@ $ k label node nodename key=value
 
 # Pod Design
 
-Deployments, Rolling Updates, Jobs and Cron Jobs
+- Labels, Annotations, Selectors
+
+- Deployments, Rolling Updates, Jobs and Cron Jobs
 
 ```bash
 # get all the resources and using label selector
 $ k get all --selector env=prod
 
+# display labels
+$ k get po --show-labels
+
+# get particular labeled po resources
+$ k get po -l app=v2
+
 # create a deployment and then label it
 $ k create deploy nginx --image=nginx --replicas=2
 $ k label deploy/nginx --overwrite app=foo
+
+# remove label or annotation
+$ k label deploy/nginx app-
+$ k annotate po/nginx description-
 
 ```
 
 # Observability
 
+- It's the art of knowing what's wrong with the given resource. Make sure you're in the right namespace.
+
+- Check events with below command:
+    ```
+    $ k describe po po-name
+    ```
+- Figure out what is wrong. Check Image, Port, readinessProbe, LivenessProbe
+
 ```bash
+
 # Get all failure events
 $ k get events
 
