@@ -254,6 +254,10 @@ $ kubectl create service nodeport nginx --tcp=80:80 --node-port=30080 --dry-run=
 # When you apply the Network Policy with labels, test it out
 $ kubectl run busybox --image=busybox --rm -it --restart=Never -- wget -O- http://nginx:80 --timeout 2
 $ kubectl run busybox --image=busybox --rm -it --restart=Never --labels=access=granted -- wget -O- http://nginx:80 --timeout 2
+
+# Access service in a diff namespace called markeing
+# Use this EP: db-service.marketing.svc.cluster.local
+
 ```
 
 # State Persistence
