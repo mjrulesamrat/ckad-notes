@@ -244,6 +244,13 @@ Ingress
 $ k create deploy nginx --image=nginx --port=80
 $ k expose deploy/name --name=service-name --port=80  # default port & targetport are same. If not same, then specify
 
+# Diff Ways to create the service for pod, deployments
+$ kubectl expose pod redis --port=6379 --name redis-service --dry-run=client -o yaml
+$ kubectl create service clusterip redis --tcp=6379:6379 --dry-run=client -o yaml
+$ kubectl expose pod nginx --type=NodePort --port=80 --name=nginx-service --dry-run=client -o yaml
+$ kubectl create service nodeport nginx --tcp=80:80 --node-port=30080 --dry-run=client -o yaml
+
+
 # When you apply the Network Policy with labels, test it out
 $ kubectl run busybox --image=busybox --rm -it --restart=Never -- wget -O- http://nginx:80 --timeout 2
 $ kubectl run busybox --image=busybox --rm -it --restart=Never --labels=access=granted -- wget -O- http://nginx:80 --timeout 2
