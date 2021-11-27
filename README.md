@@ -92,6 +92,18 @@ $ grep -i "error" # case insensitive search
 $ grep -C -i error # get 4 lines before and after of the found match
 ```
 
+If you want to delete a Pod forcibly using kubectl,
+
+    ```bash
+    kubectl delete pods <pod> --grace-period=0 --force
+    ```
+
+If even after these commands the pod is stuck on Unknown state, use the following command to remove the pod from the cluster,
+
+    ```bash
+    kubectl patch pod <pod> -p '{"metadata":{"finalizers":null}}'
+    ```
+
 # Core Concepts
 
 Creating and Managing Pods
