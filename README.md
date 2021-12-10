@@ -92,13 +92,13 @@ $ grep -i "error" # case insensitive search
 $ grep -C -i error # get 4 lines before and after of the found match
 ```
 
-If you want to delete a Pod forcibly using kubectl,
+- If you want to delete a Pod forcibly using kubectl,
 
     ```bash
     kubectl delete pods <pod> --grace-period=0 --force
     ```
 
-If even after these commands the pod is stuck on Unknown state, use the following command to remove the pod from the cluster,
+- If even after these commands the pod is stuck on Unknown state, use the following command to remove the pod from the cluster,
 
     ```bash
     kubectl patch pod <pod> -p '{"metadata":{"finalizers":null}}'
@@ -142,6 +142,20 @@ Multiple containers in a single pod. Three design patterns,
   ```bash
   $ k logs po/mypo -c nginx  # logs from nginx container
   $ k logs po/mypo -c box  # logs from box container
+
+  $ kubectl create -f pod.yaml
+  # Connect to the busybox2 container within the pod
+  $ kubectl exec -it busybox -c busybox2 -- /bin/sh
+  $ ls
+  $ exit
+
+  # or you can do the above with just an one-liner
+  $ kubectl exec -it busybox -c busybox2 -- ls
+
+  # you can do some cleanup
+  $ kubectl delete po busybox
+
+  $ k run busybox --image=busybox --restart=Never -it -- wget -O- 10.4.0.14
   ```
 
 # Configuration
@@ -204,6 +218,45 @@ $ kubectl get pods -o=jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.status.
 $ kubectl get po  -n skywalker --selector=jedi=true -o jsonpath="{range .items[*]}{.metadata.name},{.spec.containers[0].image}{'\n'}{end}" > /root/jedi-true.txt
 ```
 
+# Deployments
+
+- Ability to deploy new deployments, understanding the strategies to rollout new version, and the history & status of the rollouts
+
+  ```bash
+  $ k get deploy
+  $ k get rs -l app=nginx
+  $ k get rs rs-name -o yaml
+  $ k rollout status deploy name
+  $ k set image deploy nginx nginx=nginx:1.19.8 --record
+  $ k rollout history deploy nginx
+  $ k rollout pause deploy nginx
+  $ k rollout resume deploy nginx
+  $ k rollout status deploy/nginx
+  $ k rollout undo deploy nginx --to-revision=1
+  $ k rollout history deploy nginx --revision=1
+
+  $ k scale deploy nginx --to-replacas=5
+  $ k autoscale deploy nginx --min=5 --max=10 --cpu-percent=50
+  $ k get hpa nginx
+  $ k delete hpa nginx
+  $ k delete deploy nginx
+  ```
+
+# Secrets
+
+```bash
+# decode the secret
+$ echo -n "encoded" | base64 --decode
+
+# Taints & Tolerations
+# Tains are set on Nodes
+# Tolerations are set on Pods
+$ k taint node node-name key=valu:Effect
+
+# Node Selector
+$ k label node nodename key=value
+```
+
 # Observability
 
 - It's the art of knowing what's wrong with the given resource. Make sure you're in the right namespace.
@@ -214,24 +267,55 @@ $ kubectl get po  -n skywalker --selector=jedi=true -o jsonpath="{range .items[*
     ```
 - Figure out what is wrong. Check Image, Port, readinessProbe, LivenessProbe
 
-```bash
+  ```bash
 
-# Get all failure events
-$ k get events
+  # Get all failure events
+  $ k get events
 
-# Include namespace as well
-$ k -n ns get events | grep -i "probe failed"
+  # Include namespace as well
+  $ k -n ns get events | grep -i "probe failed"
 
-# Check logs of any resource
-$ k logs name
+  # Check logs of any resource
+  $ k logs name
 
-# Top resource utilisations for nodes & pods
-$ k top nodes
-$ k top pods
-$ k top po/po-name
-```
+  # Top resource utilisations for nodes & pods
+  $ k top nodes
+  $ k top pods
+  $ k top po/po-name
+  ```
 
-Debugging, Logging, Monitoring
+# Debugging, Logging, Monitoring
+
+- Troubleshooting always starts with the pods and then move towards deployment -> service -> secrets,configmaps -> Network Policies
+
+  ```bash
+  # Check livesness works
+  $ k describe po/nginx | grep -i "liveness"
+
+  # below will have Status of `StartError`
+  $ k run busybox --image=busybox -- notexist # startup error - pod will not run
+  # in below case, pod will run
+  $ k run busbox --image=busybox -- /bin/sh -c 'ls /notexist' # only command error
+
+  # Instant Kill
+  $ k delete po/busybox --force --grace-period=0
+
+  $ kubectl get ns # check namespaces
+  $ kubectl describe pod podname | grep -i "Error"
+  $ kubectl describe pod podname | grep -i "failed"
+  $ kubectl -n qa get events | grep -i "Liveness probe failed"
+  $ kubectl -n alan get events | grep -i "Liveness probe failed"
+  $ kubectl -n test get events | grep -i "Liveness probe failed"
+  $ kubectl -n production get events | grep -i "Liveness probe failed"
+
+  # check resource utilisation CPU/Memory
+  # metrics-server must be running
+  $ get top nodes
+  $ get top pods
+
+  $ k top pod pod_name --containers # container usage of CPU & Memory
+  ```
+
 # Services and NetworkPolicies
 
 Services
