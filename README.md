@@ -11,11 +11,12 @@ CKAD preparations notes for imperative commands
 ## Contents
 
 - [Core Concepts - 13%](#core-concepts)
+  - [Deployments](#deployments)
 - [Multi-container pods - 10%](#multi-container-pods)
 - [Configuration - 18%](#configuration)
 - [Pod design - 20%](#pod-design)
 - [Observability - 18%](#observability)
-- [Services and networking - 13%](#services-and-networking)
+- [Services and networking - 13%](#services-and-networkpolicies)
 - [State persistence - 8%](#state-persistence)
 
 
